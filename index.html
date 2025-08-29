@@ -1,212 +1,369 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VoxyStore - Order Joki</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>VoxyStore - Admin & Order Joki</title>
   <style>
-    body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:#0b1620;color:#ecf0f1;}
-    header{background:#0f1b29;padding:15px 20px;display:flex;justify-content:space-between;align-items:center;}
-    header h1{color:#00ff95;margin:0;font-size:20px;}
-    nav a{color:#fff;margin-left:20px;text-decoration:none;font-size:14px;}
-    nav a:hover{color:#00ff95;}
-    .hero{text-align:center;padding:60px 20px;}
-    .hero h2{color:#00ff95;font-size:28px;margin-bottom:10px;}
-    .btn{padding:12px 20px;margin-top:20px;border-radius:8px;border:none;cursor:pointer;font-weight:bold;background:#00ff95;color:#0a0f18;}
-    .btn:hover{opacity:0.8;}
-    footer{text-align:center;padding:20px;font-size:13px;color:#aaa;margin-top:40px;}
-    .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);justify-content:center;align-items:center;z-index:2000;}
-    .modal-content{background:#162231;padding:20px;border-radius:12px;width:90%;max-width:400px;}
-    .modal-content h3{color:#00ff95;margin-bottom:15px;}
-    .modal-content label{display:block;margin:10px 0 5px;}
-    .modal-content input,.modal-content textarea{width:100%;padding:8px;border-radius:6px;border:none;margin-bottom:10px;}
-    .modal-content button{margin-top:10px;padding:10px;border:none;border-radius:6px;font-weight:bold;cursor:pointer;}
-    .btn-close{background:#e74c3c;color:#fff;margin-right:5px;}
-    .btn-submit{background:#00ff95;color:#0a0f18;}
-    .pay-options{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
-    .pay-options input[type="radio"]{display:none;}
-    .pay-options label{padding:8px 16px;border-radius:8px;background:#1b2a3a;cursor:pointer;border:2px solid transparent;transition:0.3s;}
-    .pay-options input[type="radio"]:checked+label{background:#00ff95;color:#0a0f18;font-weight:bold;border-color:#00ff95;}
-    .orders{max-width:800px;margin:40px auto;background:#0f1b29;padding:20px;border-radius:10px;}
-    .orders h2{color:#00ff95;margin-bottom:15px;text-align:center;}
-    .order-item{background:#1b2a3a;padding:12px;margin:8px 0;border-radius:6px;font-size:14px;}
-    .order-item img{max-height:80px;margin-top:6px;border-radius:6px;}
-    .order-item button{margin-top:10px;padding:6px 10px;border-radius:6px;border:none;font-size:13px;font-weight:bold;cursor:pointer;background:#00ff95;color:#0a0f18;}
-    .status{display:inline-block;padding:3px 8px;border-radius:6px;font-size:12px;font-weight:bold;}
-    .status.Tahap\ Pembayaran{background:#e67e22;color:#fff;}
-    .status.Proses\ Joki{background:#3498db;color:#fff;}
-    .status.Done{background:#2ecc71;color:#fff;}
-    #loginPage{display:flex;justify-content:center;align-items:center;height:100vh;background:#0b1620;}
-    #loginBox{background:#162231;padding:20px;border-radius:10px;width:300px;text-align:center;}
-    #loginBox h2{color:#00ff95;}
-    #loginBox input{width:100%;padding:8px;margin:10px 0;border-radius:6px;border:none;}
-    #loginBox button{padding:10px 20px;background:#00ff95;border:none;border-radius:6px;font-weight:bold;cursor:pointer;}
-    #loginError{color:red;display:none;font-size:13px;}
-    .link{color:#00ff95;cursor:pointer;font-size:13px;}
-    .input-group{display:flex;align-items:center;gap:5px;}
-    .input-group input{flex:1;}
-    .toggle-btn{padding:6px 10px;border:none;border-radius:6px;background:#00ff95;color:#0a0f18;font-weight:bold;cursor:pointer;}
+    :root{
+      --bg:#0b1620; --card:#162231; --muted:#aaa; --accent:#00ff95; --dark:#0f1b29; --panel:#1b2a3a;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:#ecf0f1;}
+    a{color:inherit}
+    header{background:var(--dark);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:5}
+    header h1{margin:0;color:var(--accent);font-size:18px}
+    nav a{margin-left:14px;text-decoration:none;font-size:14px;color:#fff}
+    .hero{padding:48px 18px;text-align:center}
+    .hero h2{margin:0;color:var(--accent);font-size:26px}
+    .hero p{opacity:.9;margin-top:8px}
+    .btn{display:inline-block;padding:10px 16px;border-radius:9px;border:0;cursor:pointer;font-weight:700;background:var(--accent);color:#081018}
+    .container{max-width:980px;margin:28px auto;padding:0 14px}
+    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:20}
+    .modal .box{background:var(--card);padding:18px;border-radius:12px;width:92%;max-width:420px}
+    label{display:block;margin-top:10px;margin-bottom:6px;font-size:14px}
+    input[type="text"], input[type="password"], input[type="file"], textarea{width:100%;padding:8px;border-radius:8px;border:0;background:#0b2634;color:#fff}
+    textarea{min-height:70px;resize:vertical;padding-top:10px}
+    .input-group{display:flex;gap:8px;align-items:center}
+    .input-group input{flex:1}
+    .toggle-btn{padding:7px 10px;border-radius:8px;border:0;background:var(--accent);color:#081018;cursor:pointer}
+    .pay-options{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+    .pay-options input[type="radio"]{display:none}
+    .pay-options label{padding:8px 12px;border-radius:10px;background:var(--panel);cursor:pointer;border:2px solid transparent}
+    .pay-options input[type="radio"]:checked + label{background:var(--accent);color:#081018;border-color:var(--accent);font-weight:700}
+    .orders{background:var(--dark);padding:14px;border-radius:10px;margin-top:18px}
+    .order-item{background:var(--panel);padding:10px;border-radius:8px;margin-bottom:10px}
+    .order-item img{max-height:90px;border-radius:6px;margin-top:8px;display:block}
+    .status{display:inline-block;padding:4px 8px;border-radius:8px;font-weight:700;font-size:13px}
+    .status["Tahap Pembayaran"], .status.Tahap{background:#e67e22;color:#fff}
+    .status.Proses{background:#3498db;color:#fff}
+    .status.Done{background:#2ecc71;color:#fff}
+    .controls{margin-top:8px;display:flex;gap:8px;flex-wrap:wrap}
+    .small-btn{padding:7px 10px;border-radius:8px;border:0;background:var(--accent);color:#081018;cursor:pointer;font-weight:700}
+    /* Login page */
+    #loginPage{min-height:100vh;display:flex;align-items:center;justify-content:center}
+    .login-box{background:var(--card);padding:18px;border-radius:12px;width:92%;max-width:360px;text-align:center}
+    .link{color:var(--accent);cursor:pointer;font-size:14px;display:inline-block;margin-top:10px}
+    .footer{color:var(--muted);text-align:center;margin-top:20px;font-size:13px}
+    @media (min-width:720px){ .hero{padding:60px 0} }
   </style>
 </head>
 <body>
 
-<!-- LOGIN & SIGNUP -->
-<div id="loginPage">
-  <div id="loginBox">
-    <h2 id="loginTitle">Login Admin</h2>
-    <input type="text" id="loginUser" placeholder="Username">
-    <div class="input-group">
-      <input type="password" id="loginPass" placeholder="Password">
-      <button class="toggle-btn" onclick="toggleInput('loginPass')">👁</button>
+  <!-- LOGIN / SIGNUP PAGE -->
+  <div id="loginPage">
+    <div class="login-box" aria-live="polite">
+      <h2 id="loginTitle" style="margin:0 0 10px;color:var(--accent)">Login Admin</h2>
+
+      <input id="loginUser" type="text" placeholder="Username" style="padding:10px;border-radius:8px;border:0;background:#0b2634;color:#fff">
+      <div class="input-group" style="margin-top:10px">
+        <input id="loginPass" type="password" placeholder="Password">
+        <button class="toggle-btn" type="button" onclick="toggleInput('loginPass')">👁</button>
+      </div>
+
+      <!-- confirm (hidden until sign up mode) -->
+      <div id="confirmBox" class="input-group" style="margin-top:10px;display:none">
+        <input id="loginConfirm" type="password" placeholder="Konfirmasi Password">
+        <button class="toggle-btn" type="button" onclick="toggleInput('loginConfirm')">👁</button>
+      </div>
+
+      <div style="margin-top:12px">
+        <button id="loginBtn" class="btn" onclick="handleAuth()">Login</button>
+      </div>
+
+      <p id="loginError" style="color:#ff6b6b;display:none;margin-top:8px">Username / Password salah!</p>
+
+      <p style="margin-top:12px">
+        <span id="toggleSignup" class="link" onclick="enterSignup()">Belum punya akun? Sign Up</span>
+      </p>
+
+      <p class="footer" style="margin-top:8px">Default admin: <b>admin</b> / <b>12345</b></p>
     </div>
-    <!-- Tambahan confirm password untuk Sign Up -->
-    <div class="input-group" id="confirmBox" style="display:none;">
-      <input type="password" id="loginConfirm" placeholder="Konfirmasi Password">
-      <button class="toggle-btn" onclick="toggleInput('loginConfirm')">👁</button>
-    </div>
-    <button onclick="login()" id="loginBtn">Login</button>
-    <p id="loginError">Username / Password salah!</p>
-    <p><span class="link" onclick="showSignup()">Belum punya akun? Sign Up</span></p>
   </div>
-</div>
 
-<!-- MAIN PAGE -->
-<div id="mainPage" style="display:none;">
-  <header>
-    <h1>VoxyStore</h1>
-    <nav>
-      <a href="#home">Home</a>
-      <a href="#orders">Daftar Order</a>
-      <a href="#" onclick="logout()">Logout</a>
-    </nav>
-  </header>
+  <!-- MAIN PAGE (hidden until login) -->
+  <div id="mainPage" style="display:none">
+    <header>
+      <h1>VoxyStore</h1>
+      <nav>
+        <a href="#home" onclick="scrollToSection('home')">Home</a>
+        <a href="#orders" onclick="scrollToSection('orders')">Daftar Order</a>
+        <a href="#" onclick="logout()">Logout</a>
+      </nav>
+    </header>
 
-  <section class="hero" id="home">
-    <h2>SELAMAT DATANG DI VOXYSTORE</h2>
-    <p>Tempat top up Roblox, Gamepass, dan jasa joki terpercaya 🔥</p>
-    <button class="btn" onclick="openModal()">Order Joki</button>
-  </section>
+    <section id="home" class="hero">
+      <div class="container">
+        <h2>SELAMAT DATANG DI VOXYSTORE</h2>
+        <p>Order joki, upload bukti, dan proses langsung oleh admin — semuanya di sini.</p>
+        <div style="margin-top:14px">
+          <button class="btn" onclick="openModal()">Order Joki</button>
+        </div>
+      </div>
+    </section>
 
-  <!-- Modal Order -->
-  <div class="modal" id="orderModal">
-    <div class="modal-content">
-      <h3>Form Order Joki</h3>
+    <div class="container">
+      <!-- Orders List -->
+      <div id="ordersSection" class="orders" >
+        <h3 style="margin-top:0;color:var(--accent)">Daftar Order Joki</h3>
+        <div id="orderList" aria-live="polite"></div>
+        <p id="noOrders" style="color:var(--muted)"></p>
+      </div>
+    </div>
+
+    <footer style="padding:20px 0;text-align:center;color:var(--muted)">© 2025 VoxyStore - All Rights Reserved</footer>
+  </div>
+
+  <!-- Order Modal -->
+  <div id="orderModal" class="modal" aria-hidden="true">
+    <div class="box">
+      <h3 style="margin:0;color:var(--accent)">Form Order Joki</h3>
+
       <label>Username Roblox</label>
-      <input type="text" id="username" required>
+      <input id="username" type="text" placeholder="Username Roblox">
+
       <label>Password (opsional)</label>
       <div class="input-group">
-        <input type="password" id="password">
-        <button type="button" class="toggle-btn" onclick="toggleInput('password')">👁</button>
+        <input id="password" type="password" placeholder="Password (opsional)">
+        <button class="toggle-btn" type="button" onclick="toggleInput('password')">👁</button>
       </div>
+
       <label>Kebutuhan Joki</label>
       <textarea id="kebutuhan" placeholder="Contoh: Naik level 100 ke 500"></textarea>
+
       <label>Metode Pembayaran</label>
-      <div class="pay-options">
-        <input type="radio" id="pay-dana" name="pembayaran" value="Dana" checked><label for="pay-dana">Dana</label>
-        <input type="radio" id="pay-ovo" name="pembayaran" value="Ovo"><label for="pay-ovo">Ovo</label>
-        <input type="radio" id="pay-gopay" name="pembayaran" value="Gopay"><label for="pay-gopay">Gopay</label>
-        <input type="radio" id="pay-qris" name="pembayaran" value="Qris"><label for="pay-qris">Qris</label>
+      <div class="pay-options" role="radiogroup" aria-label="Metode pembayaran">
+        <input id="pay-dana" name="pembayaran" type="radio" value="Dana" checked><label for="pay-dana">Dana</label>
+        <input id="pay-ovo" name="pembayaran" type="radio" value="Ovo"><label for="pay-ovo">Ovo</label>
+        <input id="pay-gopay" name="pembayaran" type="radio" value="Gopay"><label for="pay-gopay">Gopay</label>
+        <input id="pay-qris" name="pembayaran" type="radio" value="Qris"><label for="pay-qris">Qris</label>
       </div>
-      <label>Upload Bukti Transfer</label>
-      <input type="file" id="bukti" accept="image/*">
-      <div style="text-align:right;">
-        <button class="btn-close" onclick="closeModal()">Batal</button>
-        <button class="btn-submit" onclick="submitOrder()">Kirim</button>
+
+      <label>Upload Bukti Transfer (foto)</label>
+      <input id="bukti" type="file" accept="image/*">
+
+      <div style="text-align:right;margin-top:10px">
+        <button class="toggle-btn" style="background:#e74c3c;color:#fff" onclick="closeModal()">Batal</button>
+        <button class="btn" onclick="submitOrder()">Kirim</button>
       </div>
     </div>
   </div>
 
-  <!-- Orders -->
-  <section class="orders" id="orders">
-    <h2>Daftar Order Joki</h2>
-    <div id="orderList"></div>
-  </section>
-
-  <footer>© 2025 VoxyStore - All Rights Reserved</footer>
-</div>
-
 <script>
-  let accounts = JSON.parse(localStorage.getItem("accounts")) || [{user:"admin",pass:"12345"}];
-  let isSignup=false;
+/* ---------- STORAGE / DEFAULTS ---------- */
+const ACC_KEY = "vs_accounts_v1";
+const LOGIN_KEY = "vs_isLogin_v1";
+const ORD_KEY = "vs_orders_v1";
 
-  function login(){
-    let u=document.getElementById("loginUser").value;
-    let p=document.getElementById("loginPass").value;
-    if(isSignup){
-      let c=document.getElementById("loginConfirm").value;
-      if(u && p && c){
-        if(p!==c){alert("Password dan Konfirmasi Password tidak sama!");return;}
-        accounts.push({user:u,pass:p});
-        localStorage.setItem("accounts",JSON.stringify(accounts));
-        alert("Akun berhasil dibuat! Silakan login.");
-        location.reload();
-      }else alert("Isi semua kolom!");
-    }else{
-      let found=accounts.find(a=>a.user===u && a.pass===p);
-      if(found){
-        localStorage.setItem("isLogin","true");
-        document.getElementById("loginPage").style.display="none";
-        document.getElementById("mainPage").style.display="block";
-      }else document.getElementById("loginError").style.display="block";
-    }
+/* default admin account (role:admin) */
+let accounts = JSON.parse(localStorage.getItem(ACC_KEY)) || [{user:"admin", pass:"12345", role:"admin"}];
+localStorage.setItem(ACC_KEY, JSON.stringify(accounts));
+
+let orders = JSON.parse(localStorage.getItem(ORD_KEY)) || [];
+
+/* state */
+let signupMode = false;
+
+/* ---------- AUTH (Login / SignUp) ---------- */
+function enterSignup(){
+  signupMode = true;
+  document.getElementById("loginTitle").innerText = "Sign Up Admin";
+  document.getElementById("confirmBox").style.display = "flex";
+  document.getElementById("loginBtn").innerText = "Sign Up";
+  document.getElementById("toggleSignup").innerText = "Sudah punya akun? Login";
+  document.getElementById("toggleSignup").onclick = exitSignup;
+}
+
+function exitSignup(){
+  signupMode = false;
+  document.getElementById("loginTitle").innerText = "Login Admin";
+  document.getElementById("confirmBox").style.display = "none";
+  document.getElementById("loginBtn").innerText = "Login";
+  document.getElementById("toggleSignup").innerText = "Belum punya akun? Sign Up";
+  document.getElementById("toggleSignup").onclick = enterSignup;
+  document.getElementById("loginError").style.display = "none";
+}
+
+function handleAuth(){
+  const user = document.getElementById("loginUser").value.trim();
+  const pass = document.getElementById("loginPass").value;
+  if(signupMode){
+    const conf = document.getElementById("loginConfirm").value;
+    if(!user || !pass || !conf){ alert("Isi semua kolom Sign Up"); return; }
+    if(pass !== conf){ alert("Password & konfirmasi tidak sama"); return; }
+    // create admin account
+    accounts = JSON.parse(localStorage.getItem(ACC_KEY)) || [];
+    accounts.push({user, pass, role: "admin"});
+    localStorage.setItem(ACC_KEY, JSON.stringify(accounts));
+    alert("Akun admin berhasil dibuat. Silakan login.");
+    exitSignup();
+    document.getElementById("loginUser").value = "";
+    document.getElementById("loginPass").value = "";
+    document.getElementById("loginConfirm").value = "";
+    return;
+  } else {
+    // login flow
+    accounts = JSON.parse(localStorage.getItem(ACC_KEY)) || [];
+    const found = accounts.find(a => a.user === user && a.pass === pass);
+    if(!found){ document.getElementById("loginError").style.display = "block"; return; }
+    if(found.role !== "admin"){ alert("Akun tidak punya akses admin."); return; }
+    localStorage.setItem(LOGIN_KEY, "true");
+    showMain();
+  }
+}
+
+function showMain(){
+  document.getElementById("loginPage").style.display = "none";
+  document.getElementById("mainPage").style.display = "block";
+  renderOrders();
+}
+
+/* Auto-check login on load */
+window.addEventListener("load", () => {
+  if(localStorage.getItem(LOGIN_KEY) === "true"){
+    showMain();
+  }
+  renderOrders();
+});
+
+/* Logout */
+function logout(){
+  localStorage.removeItem(LOGIN_KEY);
+  location.reload();
+}
+
+/* Toggle show/hide password by element id */
+function toggleInput(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.type = el.type === "password" ? "text" : "password";
+}
+
+/* ---------- ORDER MODAL & SUBMIT ---------- */
+function openModal(){
+  document.getElementById("orderModal").style.display = "flex";
+  document.getElementById("orderModal").setAttribute("aria-hidden","false");
+}
+function closeModal(){
+  document.getElementById("orderModal").style.display = "none";
+  document.getElementById("orderModal").setAttribute("aria-hidden","true");
+}
+
+function submitOrder(){
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value;
+  const kebutuhan = document.getElementById("kebutuhan").value.trim();
+  const pembayaran = document.querySelector('input[name="pembayaran"]:checked')?.value || "Dana";
+  const fileInput = document.getElementById("bukti");
+
+  if(!username || !kebutuhan || fileInput.files.length === 0){
+    alert("Lengkapi data (username, kebutuhan, bukti foto).");
+    return;
   }
 
-  function showSignup(){
-    document.getElementById("loginTitle").innerText="Sign Up Admin";
-    document.getElementById("loginBtn").innerText="Sign Up";
-    document.getElementById("confirmBox").style.display="flex";
-    isSignup=true;
-  }
-  function logout(){localStorage.removeItem("isLogin");location.reload();}
-  window.onload=function(){if(localStorage.getItem("isLogin")==="true"){document.getElementById("loginPage").style.display="none";document.getElementById("mainPage").style.display="block";}renderOrders();}
-  function toggleInput(id){let inp=document.getElementById(id);inp.type=inp.type==="password"?"text":"password";}
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const buktiBase64 = e.target.result;
+    const now = new Date();
+    const tanggal = now.toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"}) + " • " +
+                    now.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"});
+    const order = { username, password, kebutuhan, pembayaran, bukti: buktiBase64, tanggal, status: "Tahap Pembayaran" };
+    orders.unshift(order);
+    localStorage.setItem(ORD_KEY, JSON.stringify(orders));
+    renderOrders();
+    closeModal();
+    // reset fields
+    document.getElementById("username").value = "";
+    document.getElementById("password").value = "";
+    document.getElementById("kebutuhan").value = "";
+    fileInput.value = "";
+  };
+  reader.readAsDataURL(fileInput.files[0]);
+}
 
-  // ==== ORDER ====
-  let orders=JSON.parse(localStorage.getItem("orders"))||[];
-  function openModal(){document.getElementById("orderModal").style.display="flex";}
-  function closeModal(){document.getElementById("orderModal").style.display="none";}
-  function submitOrder(){
-    let username=document.getElementById("username").value;
-    let password=document.getElementById("password").value;
-    let kebutuhan=document.getElementById("kebutuhan").value;
-    let pembayaran=document.querySelector('input[name="pembayaran"]:checked').value;
-    let fileInput=document.getElementById("bukti");
-    if(username.trim()==""||kebutuhan.trim()==""||fileInput.files.length===0){alert("Lengkapi data terlebih dahulu!");return;}
-    let reader=new FileReader();
-    reader.onload=function(e){
-      let waktu=new Date();
-      let tanggal=waktu.toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"})+" • "+waktu.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"});
-      let data={username,password,kebutuhan,pembayaran,bukti:e.target.result,tanggal,status:"Tahap Pembayaran"};
-      orders.unshift(data);
-      localStorage.setItem("orders",JSON.stringify(orders));
-      renderOrders();closeModal();
-      document.getElementById("username").value="";document.getElementById("password").value="";document.getElementById("kebutuhan").value="";fileInput.value="";
-    }
-    reader.readAsDataURL(fileInput.files[0]);
+/* ---------- RENDER ORDERS & ACTIONS ---------- */
+function renderOrders(){
+  const list = document.getElementById("orderList");
+  const noOrders = document.getElementById("noOrders");
+  if(!list) return;
+  orders = JSON.parse(localStorage.getItem(ORD_KEY)) || [];
+  list.innerHTML = "";
+  if(orders.length === 0){
+    noOrders.textContent = "Belum ada order.";
+    return;
   }
-  function renderOrders(){
-    let orderList=document.getElementById("orderList");if(!orderList)return;
-    orderList.innerHTML="";
-    orders.forEach((o,i)=>{
-      let div=document.createElement("div");div.className="order-item";
-      div.innerHTML=`<b>${o.username}</b> - ${o.kebutuhan}<br>
-        Pembayaran: ${o.pembayaran}<br>
-        <small>${o.tanggal}</small><br>
-        Status: <span class="status ${o.status}">${o.status}</span><br>
-        ${o.bukti?`<img src="${o.bukti}" alt="Bukti Transfer">`:""}<br>
-        <button onclick="prosesWA(${i})">WhatsApp</button>
-        <button onclick="ubahStatus(${i}, 'Tahap Pembayaran')">Pembayaran</button>
-        <button onclick="ubahStatus(${i}, 'Proses Joki')">Proses</button>
-        <button onclick="ubahStatus(${i}, 'Done')">Done</button>`;
-      orderList.appendChild(div);
-    });
-  }
-  function ubahStatus(index,status){orders[index].status=status;localStorage.setItem("orders",JSON.stringify(orders));renderOrders();}
-  function prosesWA(index){
-    let o=orders[index];
-    let teks=`*Format Order Joki VoxyStore*\n\n👤 Username: ${o.username}\n${o.password?`🔑 Password: ${o.password}\n`:``}📌 Kebutuhan: ${o.kebutuhan}\n💳 Pembayaran: ${o.pembayaran}\n⏰ Tanggal: ${o.tanggal}\n📍 Status: ${o.status}`;
-    let url="https://wa.me/6283875503132?text="+encodeURIComponent(teks);window.open(url,"_blank");
-  }
+  noOrders.textContent = "";
+  orders.forEach((o, i) => {
+    const div = document.createElement("div");
+    div.className = "order-item";
+    // status badge class mapping simplified
+    const statusClass = o.status === "Tahap Pembayaran" ? "Tahap" : (o.status === "Proses Joki" ? "Proses" : "Done");
+    div.innerHTML = `
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+        <div style="flex:1">
+          <div style="font-weight:800">${escapeHtml(o.username)}</div>
+          <div style="margin-top:6px;color:#cfe9df">${escapeHtml(o.kebutuhan)}</div>
+          <div style="margin-top:6px;color:var(--muted, #9fb2b0);font-size:13px">Pembayaran: ${escapeHtml(o.pembayaran)}</div>
+          <div style="margin-top:6px;font-size:13px;color:var(--muted, #9fb2b0)">${escapeHtml(o.tanggal)}</div>
+          <div style="margin-top:8px">Status: <span class="status ${statusClass}">${o.status}</span></div>
+        </div>
+        <div style="min-width:120px;text-align:right">
+          ${o.bukti ? `<img src="${o.bukti}" alt="bukti" style="max-width:110px;border-radius:6px">` : ""}
+        </div>
+      </div>
+      <div class="controls">
+        <button class="small-btn" onclick="prosesWA(${i})">WhatsApp</button>
+        <button class="small-btn" onclick="ubahStatus(${i}, 'Tahap Pembayaran')">Pembayaran</button>
+        <button class="small-btn" onclick="ubahStatus(${i}, 'Proses Joki')">Proses Joki</button>
+        <button class="small-btn" onclick="ubahStatus(${i}, 'Done')">Done</button>
+        <button class="small-btn" style="background:#ff6b6b;color:#fff" onclick="hapusOrder(${i})">Hapus</button>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+/* set status */
+function ubahStatus(index, status){
+  orders[index].status = status;
+  localStorage.setItem(ORD_KEY, JSON.stringify(orders));
+  renderOrders();
+}
+
+/* delete order */
+function hapusOrder(index){
+  if(!confirm("Hapus order ini?")) return;
+  orders.splice(index,1);
+  localStorage.setItem(ORD_KEY, JSON.stringify(orders));
+  renderOrders();
+}
+
+/* open wa with formatted text (note: bukti ditunjukkan di daftar, WA hanya teks) */
+function prosesWA(index){
+  const o = orders[index];
+  let teks = `*Format Order Joki VoxyStore*%0A%0A` +
+            `👤 Username: ${encodeURIComponent(o.username)}%0A` +
+            (o.password ? `🔑 Password: ${encodeURIComponent(o.password)}%0A` : "") +
+            `📌 Kebutuhan: ${encodeURIComponent(o.kebutuhan)}%0A` +
+            `💳 Pembayaran: ${encodeURIComponent(o.pembayaran)}%0A` +
+            `⏰ Tanggal: ${encodeURIComponent(o.tanggal)}%0A` +
+            `📍 Status: ${encodeURIComponent(o.status)}%0A` +
+            `📷 Bukti: (lihat di daftar order)`;
+  // Ganti nomor WA berikut sesuai admin Anda (format E.164 tanpa +), contoh 628387...
+  const WA_NUMBER = "6283875503132";
+  const url = `https://wa.me/${WA_NUMBER}?text=${teks}`;
+  window.open(url, "_blank");
+}
+
+/* helper: safe escape */
+function escapeHtml(s){
+  if(!s) return "";
+  return String(s).replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]; });
+}
+
+/* quick scroll helper */
+function scrollToSection(id){ document.getElementById(id)?.scrollIntoView({behavior:"smooth"}); }
+
 </script>
 </body>
 </html>
